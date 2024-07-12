@@ -1,13 +1,34 @@
 //link:https://app.eraser.io/workspace/YtPqZ1VogxGy1jzIDkzj
 
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
+import { app } from './app.js';
 import { connectDB } from './db/db.js';
 
 dotenv.config({
-    path:'./.env'
-})
+    path: './.env'
+});
 
-connectDB();
+connectDB()
+    .then((connectionInstance) => {
+        app.get('/', (req, res) => {
+            const connectionDetails = {
+                host: connectionInstance.connection.host,
+                port: connectionInstance.connection.port,
+                name: connectionInstance.connection.name,
+                readyState: connectionInstance.connection.readyState,
+                id: connectionInstance.connection.id,
+            };
+            res.send(`<h1>DB Connected!!</h1>\nConnection Instance:${JSON.stringify(connectionDetails, null, 2)}`);
+        });
+        
+        app.listen(process.env.PORT || 6000, () => {
+            console.log(`Live on Localhost:${process.env.PORT || 6000}`);
+        });
+    })
+    .catch((err) => {
+        console.log(`DB Connection Problem:\n${err}`);
+    });
+
 
 
 
