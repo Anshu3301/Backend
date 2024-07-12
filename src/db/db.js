@@ -10,9 +10,16 @@ export const connectDB = async () =>{
 
           app.get('/',(req,res)=>{
             res.send(`<h1>DB Connected!!</h1>`)
-        })
+          })
           app.get('/connection',(req,res)=>{
-             res.send(`Connection Instance:${connectionInstance}`)
+            const connectionDetails = {
+              host: connectionInstance.connection.host,
+              port: connectionInstance.connection.port,
+              name: connectionInstance.connection.name,
+              readyState: connectionInstance.connection.readyState,
+              id:connectionInstance.connection.id,
+          };
+             res.send(`Connection Instance:${JSON.stringify(connectionDetails, null, 2)}`)
           })
           app.listen(process.env.PORT,()=>{
             console.log(`Live on Localhost:${process.env.PORT}`);
