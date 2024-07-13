@@ -10,7 +10,7 @@ dotenv.config({
 
 connectDB()
     .then((connectionInstance) => {
-        app.get('/', (req, res) => {
+        app.get('/', (err,req,res,next) => {
             const connectionDetails = {
                 host: connectionInstance.connection.host,
                 port: connectionInstance.connection.port,
