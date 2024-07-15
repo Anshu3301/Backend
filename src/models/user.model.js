@@ -9,19 +9,24 @@ const UserSchema = new mongoose.Schema({
         type:String,
         required:true,
         unique:true,
-        lowercase:true
+        lowercase:true,
+        trim:true,
+        index:true,       // makes it search optimized, but expensive
     },
     email:{
         type:String,
         required:true,
         unique:true,
+        trim:true,
     },
     fullName:{
         type:String,
         required:true,
+        trim:true,
+        index:true,    // searching through Name
     },
     avatar:{
-        type:String,
+        type:String,   // cloudnary url
         required:true,
         unique:true,
     },
@@ -32,11 +37,11 @@ const UserSchema = new mongoose.Schema({
     },
     password:{
         type:String,
-        required: true,
-        lowercase: true,
+        required: [true, 'Password is Required!'],
     },
     refreshToken:{
-
+        type:String,
+        
     }
 },{timestamps:true})
 

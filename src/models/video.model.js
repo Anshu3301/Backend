@@ -22,7 +22,6 @@ const VideoSchema = new mongoose.Schema({
      description:{
         type:String,
         required:true,
-        unique:true
      },
      duration:{
         type:Number,
@@ -41,6 +40,7 @@ const VideoSchema = new mongoose.Schema({
      isPublished:{
         type:Boolean,
         required:true,
+        default:true,
      }
 },{timestamps:true})
 
