@@ -7,8 +7,8 @@ class ApiError extends Error {
     {
         super(message);
         this.statusCode = statusCode;
-        this.data = null;             // not mentioned in arguments
-        this.success = false;
+        this.data = null;             // as Error, so no data recieved
+        this.success = false;         // Error/Failed
         this.errors = errors;
 
         if (stack) {
