@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import jsonwebtoken from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import bcryptjs from 'bcryptjs'
 
 
@@ -68,5 +68,25 @@ UserSchema.pre('save', async function(next){   // (err,req,res,next)
 UserSchema.methods.isCorrectPassword = async function (password) {
     return await bcryptjs.compare(password,this.password);
 }
+
+UserSchema.methods.generateAccessToken = function () {
+    return jwt.sign({
+        _id:this.id,
+        username:this.username,
+        fullName:this.fullName,
+        iat: Math.floor(Date.now() / 1000)   // initiated at
+    },
+    process.env.ACCESS_TOKEN_PRIVATE_KEY,
+    {expiresIn: 10*60}     // 600 secs or 10 mins
+)}
+
+UserSchema.methods.generateRefreshToken = function () {
+    return jwt.sign({
+        _id:this.id,
+        iat: Math.floor(Date.now() / 1000)
+    },
+    process.env.REFRESH_TOKEN_PRIVATE_KEY,
+    {expiresIn: REFRESH_TOKEN_EXPIRY}     
+)}
 
 export const User = mongoose.model("User",UserSchema);
