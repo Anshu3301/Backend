@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import jsonwebtoken from 'jsonwebtoken'
+import bcryptjs from 'bcryptjs'
+
 
 const UserSchema = new mongoose.Schema({
     watchHistory:[{                         // array of Id of videos
@@ -44,5 +47,26 @@ const UserSchema = new mongoose.Schema({
         
     }
 },{timestamps:true})
+
+UserSchema.pre('save', async function(next){   // (err,req,res,next) 
+    if (! this.isModified("password")) {       //if not modified then call next;
+        next(); return;
+    }
+    bcryptjs.hash(this.password, 20);   // hashing password 20 rounds
+    next(); 
+
+    // if (this.isModified("password")){       // if modified then only hash the new password
+    //     bcryptjs.hash(this.password, 20);   // hashing password 20 rounds
+    //     next();                             // after hashing call next task
+    // }
+    // else{
+    //     next();
+    // }
+    
+})
+
+UserSchema.methods.isCorrectPassword = async function (password) {
+    return await bcryptjs.compare(password,this.password);
+}
 
 export const User = mongoose.model("User",UserSchema);
