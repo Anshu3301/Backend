@@ -1,7 +1,14 @@
 // const asyncHandler = () => {}
-// const asyncHandler = (func) => { () => {} }
-// const asyncHandler = (func) => {async () => {}}
-
+// const asyncHandler = (fn) => { () => {} }
+// const asyncHandler = (fn) => {async () => {} }
+// const asyncHandler = (fn) => {async () => {
+//                                   try{ 
+//                                     await fn()
+//                                     } catch(err){
+//                                      console.log(err)
+//                                     }
+//                                     }}
+    
 
 export const asyncHandler = (fn) => async (req, res, next) => {
     try {
