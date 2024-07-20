@@ -30,13 +30,12 @@ const UserSchema = new mongoose.Schema({
         index:true,    // searching through Name
     },
     avatar:{
-        type:String,   // cloudnary url
+        type:String,   // cloudinary url
         required:true,
         unique:true,
     },
     coverImage:{
         type:String,
-        required:true,
         unique:true,
     },
     password:{
