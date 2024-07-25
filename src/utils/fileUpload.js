@@ -16,7 +16,7 @@ const fileUpload = async function (filePath) {
     try {
         if (filePath){
             console.log('\nUploading File:',filePath);
-            let response = await cloudinary.uploader.upload(filePath, 
+            let response = await cloudinary.uploader.upload(filePath,
                 { 
                   resource_type: "auto",
                 }
