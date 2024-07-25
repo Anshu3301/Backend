@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs'
+import { ApiError } from './ApiError.js';
 
 // https://console.cloudinary.com/pm/c-1b01ce1ed858c4ccef058c107fa8da/getting-started
 
@@ -14,24 +15,24 @@ cloudinary.config({
 const fileUpload = async function (filePath) {
     try {
         if (filePath){
-           let response = await cloudinary.uploader.upload(filePath, 
+            console.log('\nUploading File:',filePath);
+            let response = await cloudinary.uploader.upload(filePath, 
                 { 
-                  public_id: 'shoes',
                   resource_type: "auto",
                 }
             )
-            alert('Upload Successful!');
-            console.log(`Response:\n${response}`);  // Response: https://cloudinary.com/documentation/upload_images
+            // console.log(`\nResponse:\n${JSON.stringify(response,null,2)}\n`);  // Response: https://cloudinary.com/documentation/upload_images
             fs.unlinkSync(filePath);  // as Uploaded, remove locally saved temporary file
-            return response.url;
+            return response.secure_url;
             
         }
-        else  throw new Error('File Path not Found!');
+        else  throw new ApiError(404,'File Path not Found!');
            
     } catch (error) {
-        console.log(error);
+        
         fs.unlinkSync(filePath); // remove the locally saved temporary file as the upload operation got failed
         return null;
+        
     }
 
     // cloudinary.uploader.upload(filePath, 
