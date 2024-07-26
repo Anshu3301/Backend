@@ -94,4 +94,49 @@ console.log('\nChecking if user Properly Created!');
     )
 })
 
-export {registerUser}
+const loginUser = asyncHandler(async(req,res,next)=>{
+    // STEPS:
+        // {username,email,password} <-- req.body
+        // check if email or username and password is provided
+        // check if email/username already exists, if not route to '/registerUser'
+        // match the email/username with given password
+        // if match found,
+                //accessToken & refreshToken generate,
+                // send through cookies
+                // then login
+        // else "Incorrect Credentials!"
+
+    // 1.
+    const {username,email,password} = req.body;
+
+    // 2.
+    if(!username && !email){
+        throw new ApiError(405,"Username/Email is Required!");
+    }
+    if(!password){
+        throw new ApiError(405,"Password is Required!");
+    }
+
+    // 3.
+    const existedUser = User.findOne({
+        $or:[{email},{username}]
+    })
+
+    if(!existedUser){
+        throw new ApiError(406,"Register First!");
+        // console.log("");
+        // registerUser();
+    }
+
+    // 4.
+    const correctPassword = await existedUser.isCorrectPassword(password);
+    if(!correctPassword){
+        throw new ApiError(407,"Incorrect Password!");
+    }
+    else{
+        
+    }
+
+})
+
+export {registerUser,loginUser}

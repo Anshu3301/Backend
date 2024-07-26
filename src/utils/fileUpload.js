@@ -29,7 +29,6 @@ const fileUpload = async function (filePath) {
         else  throw new ApiError(404,'File Path not Found!');
            
     } catch (error) {
-        
         fs.unlinkSync(filePath); // remove the locally saved temporary file as the upload operation got failed
         return null;
         
@@ -37,7 +36,6 @@ const fileUpload = async function (filePath) {
 
     // cloudinary.uploader.upload(filePath, 
     //     { 
-    //       public_id: 'shoes',
     //       resource_type: "auto",
     //     })
     //     .then((resp)=>{console.log(resp.url);})
