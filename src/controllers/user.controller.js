@@ -3,6 +3,27 @@ import {ApiError} from '../utils/ApiError.js'
 import {User} from '../models/user.model.js'
 import { fileUpload } from '../utils/fileUpload.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
+import  mongoose  from "mongoose";
+
+
+const generate_Access_n_RefreshToken = async (userId)=>{
+        try {
+            //find the user by id
+            let user = await User.findById(userId);
+            // generate tokens for the user
+            const accessToken  = user.generateAccessToken();
+            const refreshToken = user.generateRefreshToken();
+            // update the refreshToken & save in DB
+            user.refreshToken = refreshToken;
+            await user.save({validateBeforeSave:false});
+            // return the tokens...
+            return { accessToken,refreshToken };
+        } catch (error) {
+            throw new ApiError(506, "Referesh and Access token Generation failed!");
+        }
+     
+}
+
 
 const registerUser = asyncHandler( async(req,res,next)=>{
     // console.log(req.body);
@@ -94,7 +115,7 @@ console.log('\nChecking if user Properly Created!');
     )
 })
 
-const loginUser = asyncHandler(async(req,res,next)=>{
+const loginUser = asyncHandler( async(req,res,next)=>{
     // STEPS:
         // {username,email,password} <-- req.body
         // check if email or username and password is provided
@@ -118,12 +139,13 @@ const loginUser = asyncHandler(async(req,res,next)=>{
     }
 
     // 3.
-    const existedUser = User.findOne({
+    const existedUser = await User.findOne({
         $or:[{email},{username}]
     })
 
+
     if(!existedUser){
-        throw new ApiError(406,"Register First!");
+        throw new ApiError(406,"User not found. Register First!");
         // console.log("");
         // registerUser();
     }
@@ -131,12 +153,78 @@ const loginUser = asyncHandler(async(req,res,next)=>{
     // 4.
     const correctPassword = await existedUser.isCorrectPassword(password);
     if(!correctPassword){
-        throw new ApiError(407,"Incorrect Password!");
+        throw new ApiError(407,"Invalid Password!");
     }
-    else{
-        
+    
+    // 5.
+    const userId = existedUser._id;
+    console.log("\nGenerating Tokens...");
+    const {accessToken,refreshToken} = await generate_Access_n_RefreshToken(userId);
+    console.log("Tokens Generated!");
+
+    const loggedInUser = await User.findById(userId).select("-password -refreshToken");
+
+    console.log("User logged In Successfully");
+
+    const options = {
+        httpOnly: true,
+        secure: true
     }
+
+
+    return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+        new ApiResponse(200, "User logged In Successfully", {user: loggedInUser, accessToken, refreshToken})
+    )
+    
+})
+
+const logoutUser = asyncHandler( async(req,res,next)=>{
+    // STEPS:
+        //check if user logged in by Access Token   (Middleware -> auth.js)
+        // retrieve _id from Token                  (Middleware -> auth.js)
+        // get user from _id                        (Middleware -> auth.js)
+        // remove Refresh Token value from DB & clear cookie of Access & Refresh Token 
+
+
+    // console.log(`${req.user}\n`);
+    // console.log(`${JSON.stringify(req.cookies, null, 2)}\n`);
+
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $unset: { refreshToken: 1 }
+        },
+        { new: true }
+    );
+    
+    // For DEBUGGING:
+    // mongoose.set('debug', true);
+    //  await User.findByIdAndUpdate(
+    //     req.user._id,
+    //     { $unset: { refreshToken: 1 } },
+    //     { new: true }
+    // );
+
+    
+
+    const options = {
+        httpOnly: true,
+        secure: true
+    }
+
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(
+        new ApiResponse(200, "User logged Out Successfully", {})
+    )
 
 })
 
-export {registerUser,loginUser}
+
+export {registerUser,loginUser, logoutUser}
