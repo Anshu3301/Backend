@@ -51,16 +51,9 @@ userSchema.pre('save', async function(next){   // (err,req,res,next)
     if (! this.isModified("password")) {       //if not modified then call next;
         next(); return;
     }
-    this.password = await bcryptjs.hash(this.password, 5);   // hashing password 20 rounds
+    this.password = await bcryptjs.hash(this.password, 20);   // hashing password 20 rounds
     next(); 
 
-    // if (this.isModified("password")){       // if modified then only hash the new password
-    //     bcryptjs.hash(this.password, 10);   // hashing password 20 rounds
-    //     next();                             // after hashing call next task
-    // }
-    // else{
-    //     next();
-    // }
     
 })
 
@@ -72,20 +65,18 @@ userSchema.methods.generateAccessToken = function () {
     return jwt.sign({
         _id:this.id,
         username:this.username,
-        fullName:this.fullName,
         iat: Math.floor(Date.now() / 1000)   // initiated at
     },
     process.env.ACCESS_TOKEN_PRIVATE_KEY,
-    {expiresIn: 10*60}     // 600 secs or 10 mins
+    {expiresIn: 15*60}     // 900 secs or 15 mins
 )}
 
 userSchema.methods.generateRefreshToken = function () {
     return jwt.sign({
         _id:this.id,
-        iat: Math.floor(Date.now() / 1000)
     },
     process.env.REFRESH_TOKEN_PRIVATE_KEY,
-    {expiresIn: REFRESH_TOKEN_EXPIRY}     
+    {expiresIn: process.env.REFRESH_TOKEN_EXPIRY}     
 )}
 
 export const User = mongoose.model("User",userSchema);
