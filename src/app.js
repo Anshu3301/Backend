@@ -9,10 +9,10 @@ app.use(cors({
     credentials: true
 }))
 
-app.use(express.json({limit: "16kb"}))             // body-parser
-app.use(express.urlencoded({extended: true, limit: "16kb"}))
+app.use(express.json({limit: "16kb"}))                          // body-parser to access JSON data
+app.use(express.urlencoded({extended: true, limit: "16kb"}))    // to access URL encoded data
 app.use(express.static("public"))
-app.use(cookieParser())
+app.use(cookieParser())                                         // to access Cookies in req & res
 
 
 // route import
