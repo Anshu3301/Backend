@@ -1,6 +1,8 @@
 import express from "express";
-import { registerUser } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.js";
+import { verifyToken } from "../middlewares/auth.middleware.js";
+import { registerUser,loginUser, logoutUser } from "../controllers/user.controller.js";
+
 
 const userRouter = express.Router()
 
@@ -10,5 +12,10 @@ userRouter.route("/register").post(upload.fields([
     ]),
     registerUser
 )
+
+userRouter.route("/login").post(loginUser);
+
+// Secured Routes
+userRouter.route("/logout").post(verifyToken, logoutUser)
 
 export {userRouter}
