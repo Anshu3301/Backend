@@ -11,6 +11,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+let currentPublicId;
 
 const fileUpload = async function (filePath) {
     try {
@@ -23,7 +24,8 @@ const fileUpload = async function (filePath) {
             )
             // console.log(`\nResponse:\n${JSON.stringify(response,null,2)}\n`);  // Response: https://cloudinary.com/documentation/upload_images
             fs.unlinkSync(filePath);  // as Uploaded, remove locally saved temporary file
-            return response.secure_url;
+            currentPublicId = response.public_id
+            return response.url;
             
         }
         else  throw new ApiError(404,'File Path not Found!');
