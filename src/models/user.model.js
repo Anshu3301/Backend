@@ -68,7 +68,7 @@ userSchema.methods.generateAccessToken = function () {
         iat: Math.floor(Date.now() / 1000)   // initiated at
     },
     process.env.ACCESS_TOKEN_PRIVATE_KEY,
-    {expiresIn: 15*60}     // 900 secs or 15 mins
+    {expiresIn: 30*60}     // 1800 secs or 30 mins
 )}
 
 userSchema.methods.generateRefreshToken = function () {
