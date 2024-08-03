@@ -28,10 +28,10 @@ userRouter.route("/login").post(loginUser);
 userRouter.route("/logout").post(verifyToken, logoutUser);
 userRouter.route("/refresh_access_token").post(refreshAccessToken);
 userRouter.route("/update_password").post(verifyToken, updatePassword);
-userRouter.route("/get_current_user").post(verifyToken, getCurrentUser);
-userRouter.route("/update_profile").post(verifyToken, updateUserProfile);
-userRouter.route("/update_avatar").post(verifyToken, upload.single('avatar'), updateUserAvatar);
-userRouter.route("/update_cover_image").post(verifyToken, upload.single('coverImage'), updateUserCoverImage);
+userRouter.route("/get_current_user").get(verifyToken, getCurrentUser);
+userRouter.route("/update_profile").patch(verifyToken, updateUserProfile);
+userRouter.route("/update_avatar").patch(verifyToken, upload.single('avatar'), updateUserAvatar);
+userRouter.route("/update_cover_image").patch(verifyToken, upload.single('coverImage'), updateUserCoverImage);
 
 
 
