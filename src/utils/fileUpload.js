@@ -11,8 +11,6 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-let currentPublicId;
-
 const fileUpload = async function (filePath) {
     try {
         if (filePath){
