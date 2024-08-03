@@ -3,7 +3,6 @@ import {ApiError} from '../utils/ApiError.js'
 import {User} from '../models/user.model.js'
 import { fileUpload } from '../utils/fileUpload.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
-import  mongoose  from "mongoose";
 import jwt from "jsonwebtoken"
 import { fileRemove } from '../utils/fileRemove.js'
 
