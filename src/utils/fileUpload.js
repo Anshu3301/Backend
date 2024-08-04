@@ -22,7 +22,6 @@ const fileUpload = async function (filePath) {
             )
             // console.log(`\nResponse:\n${JSON.stringify(response,null,2)}\n`);  // Response: https://cloudinary.com/documentation/upload_images
             fs.unlinkSync(filePath);  // as Uploaded, remove locally saved temporary file
-            currentPublicId = response.public_id
             return response.url;
             
         }
