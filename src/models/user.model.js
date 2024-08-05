@@ -23,6 +23,9 @@ const userSchema = new mongoose.Schema({
         unique:true,
         trim:true,
     },
+    contact:{
+        type:Number,
+    },
     fullName:{
         type:String,
         required:true,
