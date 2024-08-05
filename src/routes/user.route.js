@@ -1,5 +1,5 @@
 import express from "express";
-import { upload } from "../middlewares/multer.js";
+import { upload } from "../middlewares/multer.middleware.js";
 import { verifyToken } from "../middlewares/auth.middleware.js";
 import { registerUser,
          loginUser,
@@ -10,6 +10,8 @@ import { registerUser,
          updateUserProfile,
          updateUserAvatar,
          updateUserCoverImage,
+         deleteUser,
+         getUserChannelProfile
        } from "../controllers/user.controller.js";
 
 
@@ -32,8 +34,9 @@ userRouter.route("/get_current_user").get(verifyToken, getCurrentUser);
 userRouter.route("/update_profile").patch(verifyToken, updateUserProfile);
 userRouter.route("/update_avatar").patch(verifyToken, upload.single('avatar'), updateUserAvatar);
 userRouter.route("/update_cover_image").patch(verifyToken, upload.single('coverImage'), updateUserCoverImage);
+userRouter.route("/delete_user").delete(verifyToken, deleteUser);
 
-
+userRouter.route("/user_channel_profile").get(verifyToken, getUserChannelProfile);
 
 
 export {userRouter}
